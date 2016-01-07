@@ -62,3 +62,40 @@ func BenchmarkPasswordToHash(b *testing.B) {
 		_ = secure551.PasswordToHash(password, salt)
 	}
 }
+
+func TestEncrypted(t *testing.T) {
+	src := "sample_string"
+	key1 := "string---------32---------string"
+	key2 := "string--------3--2--------string"
+
+	ret1 := secure551.Encrypted(src, key1)
+	ret2 := secure551.Encrypted(src, key2)
+
+	if ret1 == "" {
+		t.Errorf("文字列の暗号化に失敗しました。\nRet: %s\n", ret1)
+	}
+	if ret1 != "00285a12ed2484e1a41b2c987e" {
+		t.Errorf("文字列の暗号化に失敗しました。\nRet: %s\n", ret1)
+	}
+
+	if ret2 == "" {
+		t.Errorf("文字列の暗号化に失敗しました。\nRet: %s\n", ret2)
+	}
+	if ret2 != "eef8cfbaf79f19a5f3160c46d0" {
+		t.Errorf("文字列の暗号化に失敗しました。\nRet: %s\n", ret2)
+	}
+	if ret1 == ret2 {
+		t.Errorf("文字列の暗号化に失敗しました。\nRet2: %s\nRet1: %s\n", ret1, ret2)
+	}
+}
+
+func BenchmarkEncrypted(b *testing.B) {
+	src := "sample_string"
+	key := "string---------32---------string"
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = secure551.Encrypted(src, key)
+	}
+
+}
