@@ -99,3 +99,31 @@ func BenchmarkEncrypted(b *testing.B) {
 	}
 
 }
+
+func TestDecrypted(t *testing.T) {
+	src := "sample_string"
+	key1 := "string---------32---------string"
+	key2 := "string--------3--2--------string"
+	enc := secure551.Encrypted(src, key1)
+	ret1 := secure551.Decrypted(enc, key1)
+	ret2 := secure551.Decrypted(enc, key2)
+
+	if ret1 != src {
+		t.Errorf("文字列の復号化に失敗しました。\nRet: %s\n", ret1)
+	}
+	if ret2 == src {
+		t.Errorf("文字列の復号化に失敗しました。\nRet: %s\n", ret2)
+	}
+
+}
+
+func BenchmarkDecrypted(b *testing.B) {
+	src := "sample_string"
+	key := "string---------32---------string"
+	enc := secure551.Encrypted(src, key)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = secure551.Decrypted(enc, key)
+	}
+}

@@ -83,3 +83,28 @@ func Encrypted(src, key string) string {
 	return string551.BytesToString(ret)
 
 }
+
+var numByteList = map[byte]int{0x30: 0, 0x31: 1, 0x32: 2, 0x33: 3, 0x34: 4, 0x35: 5, 0x36: 6, 0x37: 7, 0x38: 8, 0x39: 9, 0x61: 10, 0x62: 11, 0x63: 12, 0x64: 13, 0x65: 14, 0x66: 15}
+
+func Decrypted(src, key string) string {
+	bytes := string551.StringToBytes(src)
+
+	text := make([]byte, 0, len(src)*3)
+
+	for i := 0; i < len(bytes); i += 2 {
+		v := numByteList[bytes[i]] * 16
+		v += numByteList[bytes[i+1]]
+		text = append(text, byte(v))
+	}
+
+	aesInstance, err := aes.NewCipher([]byte(key))
+	if err != nil {
+		panic(err)
+	}
+
+	cfbdec := cipher.NewCFBDecrypter(aesInstance, chars)
+	plaintextCopy := make([]byte, len(text))
+	cfbdec.XORKeyStream(plaintextCopy, text)
+
+	return string551.BytesToString(plaintextCopy)
+}
